@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="UTF-8" />
+<title>Optical Fibres</title>
+</head>
+<style>
+body {
+      background-color: #111;
+      color: #0f0;
+      font-family: monospace;
+      font-size: 14px;
+    }
+p{
+color:white;
+}
+</style>
+<body style=" white-space: pre">
+<h1 style="color:white">PROJECT BASED LEARNING REPORT</h1>
+<h2 style="color:white">Physics 2 - Theory   115B1PH111</h2>
+<h3 style="color:white" >OPTICAL FIBRES</h3>
+<p style="color:white">Hi, I am Jigyasa Valecha, A first year student at JIIT Noida, a student passionate about Optics.
+In this project, I have tried to create a small simulation of how total internal reflection in taking place in an optical fibre with air cladding <p>
+<hr>
+<p style="color:white"><strong>AIM</strong>
+<i>To understand the working of Optical fibres,explore their applications in the modern world and to check the necessary conditions for the optic fibre to work.</p></i>
+<p><strong>WORKING</strong><i>
+Fiber optics transmit data as light through thin sheets of glass or plastic. Each fiber consists of a core, where the light travels through it, and a surrounding 
+cladding that reflects the light back into the core part. Data is converted into light using a laser or LED, and these light pulses travel through the core, 
+bouncing off the cladding to stay contained in it. Because the light must strike the boundary with an angle greater than the critical angle, only light that enters 
+the fiber within a certain range of angles can travel down the fiber without leaking out. This range of angles is called the acceptance cone of the fiber. 
+The size of this acceptance cone is a function of the refractive index difference between the fiber's core and cladding.</p></i>
+
+<h2 style=" color:white">SIMULATION</h2>
+ <div id="screen"></div>
+
+  <script>
+    const width = 160;
+    const height = 20;
+    const fiberTop = 0;
+    const fiberBottom = 10;
+
+    let ray = {
+      x: 0,
+      y: 8,
+      dx: 1,
+      dy: 1,
+    };
+
+    const screen = document.getElementById('screen');
+
+    function createFrame() {
+      let frame = [];
+      for (let y = 0; y < height; y++) {
+        let row = '';
+        for (let x = 0; x < width; x++) {
+          if (y === fiberTop || y === fiberBottom) {
+            row += '-';
+          } else {
+            row += ' ';
+          }
+        }
+        frame.push(row);
+      }
+      return frame;
+    }
+
+    function update() {
+      let frame = createFrame();
+
+      // Draw the ray
+      if (
+        ray.y >= 0 &&
+        ray.y < height &&
+        ray.x >= 0 &&
+        ray.x < width
+      ) {
+        let row = frame[ray.y];
+        frame[ray.y] = row.substring(0, ray.x) + '*' + row.substring(ray.x + 1);
+      }
+
+      // Display frame
+      screen.textContent = frame.join('\n');
+
+      // Move ray
+      ray.x += ray.dx;
+      ray.y += ray.dy;
+
+      // Reflect if hitting top/bottom wall
+      if (ray.y <= fiberTop + 1 || ray.y >= fiberBottom - 1) {
+        ray.dy *= -1;
+      }
+
+      // Stop when ray exits right
+      if (ray.x < width) {
+        setTimeout(update, 150);
+      }
+    }
+
+    update(); // Start animation
+</script>
+ <h2>Numerical Aperture Calculator for Optical Fiber</h2>
+
+  <label for="n1">Refractive Index n₁ (core): </label><br>
+  <input type="number" id="n1" step="0.01"><br>
+
+  <label for="n2">Refractive Index n₂ (cladding): </label><br>
+  <input type="number" id="n2" step="0.01"><br>
+
+  <button onclick="calculateNA()">Calculate NA</button>
+
+  <div id="output"></div>
+
+  <script>
+    function calculateNA() {
+      const n1 = parseFloat(document.getElementById("n1").value);
+      const n2 = parseFloat(document.getElementById("n2").value);
+      const output = document.getElementById("output");
+
+      if (isNaN(n1) || isNaN(n2)) {
+        output.textContent = "Please enter both refractive indices.";
+        return;
+      }
+
+      if (n1 <= n2) {
+        output.textContent = "Invalid input: n₁ must be greater than n₂.";
+        return;
+      }
+
+      const NA = Math.sqrt(n1 * n1 - n2 * n2);
+      const thetaRad = Math.asin(NA); // in radians
+      const thetaDeg = thetaRad * (180 / Math.PI); // convert to degrees
+
+      output.innerHTML = 
+        ✅ Valid refractive indices<br>
+        Numerical Aperture (NA): ${NA.toFixed(4)}<br>
+        Acceptance Angle (θ): ${thetaDeg.toFixed(2)}°;
+    }
+  </script>
+</body>
+</html>
